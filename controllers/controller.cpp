@@ -72,10 +72,11 @@ std::vector<Like> Controller::getLikes()
     return likeLists;
 }
 
-std::vector<Post> Controller::getposts()
+std::vector<Post> Controller::getposts(int id)
 {
     // Prepare the SQL statement to select all posts
-    const char *sql = "SELECT * FROM post";
+    std::string query = "SELECT * FROM post WHERE user_id==" + std::to_string(id) + "ORDER BY created_at ASC";
+    const char *sql = query.c_str();
     if (sqlite3_prepare_v2(mDb, sql, -1, &mStmt, NULL) != SQLITE_OK) {
         std::cerr << "Error preparing SQL statement: " << sqlite3_errmsg(mDb) << std::endl;
         sqlite3_close(mDb);
@@ -100,11 +101,19 @@ std::vector<Post> Controller::getposts()
     sqlite3_close(mDb);
 }
 
-std::vector<Follow> Controller::getFollow()
+
+//CREATE TABLE "follow" (
+//    "created_at"	INTEGER,
+//    "follower_id"	INTEGER NOT NULL,
+//    "following_id"	INTEGER NOT NULL,
+//    PRIMARY KEY("follower_id","following_id")
+//    );
+std::vector<Follow> Controller::getFollow(int id)
 {
 
     // Prepare the SQL statement to select all follows
-    const char *sql = "SELECT * FROM follow";
+    std::string query = "SELECT following_id FROM follow WHERE follower_id== " + std::to_string(id);
+    const char *sql = query.c_str();
     if (sqlite3_prepare_v2(mDb, sql, -1, &mStmt, NULL) != SQLITE_OK) {
         std::cerr << "Error preparing SQL statement: " << sqlite3_errmsg(mDb) << std::endl;
         sqlite3_close(mDb);

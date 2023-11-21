@@ -15,8 +15,8 @@ public:
     Controller();
     std::vector<User>getUsers();
     std::vector<Like>getLikes();
-    std::vector<Post>getposts();
-    std::vector<Follow>getFollow();
+    std::vector<Post>getposts(int id);
+    std::vector<Follow>getFollow(int id);
 private:
     sqlite3 *mDb;
     sqlite3_stmt *mStmt;

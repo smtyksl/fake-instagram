@@ -5,6 +5,7 @@
 class User
 {
 public:
+    User();
     User(int id, const std::string &userName, const std::string &email, const std::string &fullName, const std::string &profilePicture, const std::string &bio, long int  createdAt);
     int id;
     std::string userName;

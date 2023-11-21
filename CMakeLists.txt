@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(Scorp LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories(.)
 
@@ -15,7 +15,8 @@ add_executable(Scorp main.cpp
     models/post.h models/post.cpp
     models/follow.h models/follow.cpp
     models/like.h models/like.cpp
-    controllers/controller.h controllers/controller.cpp)
+    controllers/controller.h controllers/controller.cpp
+    backend.h backend.cpp)
 target_link_libraries(Scorp PUBLIC Crow::Crow SQLite::SQLite3)
 include(GNUInstallDirs)
 install(TARGETS Scorp
