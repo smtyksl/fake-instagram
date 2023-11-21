@@ -33,6 +33,7 @@ std::vector<Post> Backend::getPosts(int id)
     if(!userExist)
         return std::vector<Post>(); // hata durumu sistemde hiç user yoksa!!
 
+    followingList[id] = getFollowingUser(id);
     if(followingList.contains(id))
     {
         for(auto followingID: followingList[id])

@@ -1,0 +1,15 @@
+* main.cpp içersinde crowcpp kullannılarak url parameter olarak alınan id ile 
+bir istek karşılaması yapılmaktadır.
+* bu istek backend.cpp backend.h içerisinde bulunan id ye bağlı getpost methodu kullanılarak postlar istenmektedir.
+    1) get post içerisinde ilk olarak db  de istenen user var mı diye bakılıyor eğer yok ise boş bir post listesi dönülüyor
+    2)  daha sonra bu user in follow ettiği diğer userların bilgisi alınıyor.
+        a)eğer hiç user follow etmiyorsa yine boş bir post listesi dönüyor.
+        b) eğer var ise bütün userların postları tek tek alınıyor ve user için tutulan post  listesine ekleniyor
+        c) merge_post ile createdAt sırasına göre (asc) ekleniyor eğer aynı createdAt değerine sahipse id si büyük olan daha önce eklenmiş varsayılıyor.
+            burada elimizdeki post listesi ve daha sonra gelen post listesi 2 for döngüsüyle yeniden düzenlendiği için big o notasyonu m*n olmalı.
+    3) her bir database tablosu için birer class oluşturuldu bunlar models klasörü içersinde her birisi için toString methodları oluşturuldu.
+    4) controllers class inda ise ihtiyaca bağlı db den user,follow,like ve post tablolalarından veriler çeken queryler oluşturuldu.
+
+Ek olarak db alışverişlerinin bazı durumlarına kesin karar veremedim, mesela her veri çekilmeli mi ?  memory de mi tutulmalı? ya db güncellenirse o sırada durumları  aklımı karıştırdığı için.
+    
+ 
