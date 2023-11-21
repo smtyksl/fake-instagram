@@ -8,13 +8,8 @@ Controller::Controller()
 
 {
     // Open the database file
-
-    if (sqlite3_open("db.sqlite3", &mDb) != SQLITE_OK) {
+    if (sqlite3_open("db.sqlite3", &mDb) != SQLITE_OK)
         std::cerr << "Error opening database: " << sqlite3_errmsg(mDb) << std::endl;
-    }
-    // Prepare the SQL statement to select all records from the "users" table
-
-
 }
 
 std::vector<User> Controller::getUsers()
@@ -44,7 +39,7 @@ std::vector<User> Controller::getUsers()
 std::vector<Like> Controller::getLikes()
 {
     // Prepare the SQL statement to select all likes
-    const char *sql = "SELECT * FROM like";
+    const char *sql = "SELECT * FROM like ORDER BY created_at ASC";
     if (sqlite3_prepare_v2(mDb, sql, -1, &mStmt, NULL) != SQLITE_OK) {
         std::cerr << "Error preparing SQL statement: " << sqlite3_errmsg(mDb) << std::endl;
         sqlite3_close(mDb);
@@ -64,7 +59,6 @@ std::vector<Like> Controller::getLikes()
         likeLists.push_back(
             Like(id,postId,userId,createdAt));
     }
-
     // Finalize the SQL statement and close the database connection
     sqlite3_finalize(mStmt);
     sqlite3_close(mDb);
@@ -81,7 +75,7 @@ std::vector<Post> Controller::getposts(int id)
         std::cerr << "Error preparing SQL statement: " << sqlite3_errmsg(mDb) << std::endl;
         sqlite3_close(mDb);
     }
-
+    std::vector<Post> postList;
     // Execute the SQL statement and fetch the results
     int rc;
     while ((rc = sqlite3_step(mStmt)) == SQLITE_ROW) {
@@ -94,25 +88,23 @@ std::vector<Post> Controller::getposts(int id)
 
         // Print the values of the columns in the current row
         std::cout << "ID: " << id << ", Description: " << description << ", User ID: " << userId << ", Image: " << image << ", Created At: " << createdAt << std::endl;
+        postList.push_back(
+            Post(id,description,userId,image,createdAt)
+            );
     }
 
     // Finalize the SQL statement and close the database connection
     sqlite3_finalize(mStmt);
     sqlite3_close(mDb);
+    return postList;
 }
 
-
-//CREATE TABLE "follow" (
-//    "created_at"	INTEGER,
-//    "follower_id"	INTEGER NOT NULL,
-//    "following_id"	INTEGER NOT NULL,
-//    PRIMARY KEY("follower_id","following_id")
-//    );
-std::vector<Follow> Controller::getFollow(int id)
+std::vector<int> Controller::getFollow(int id)
 {
 
     // Prepare the SQL statement to select all follows
-    std::string query = "SELECT following_id FROM follow WHERE follower_id== " + std::to_string(id);
+    std::vector<int> followingIds;
+    std::string query = "SELECT following_id FROM follow WHERE follower_id== " + std::to_string(id) + + "ORDER BY created_at ASC";
     const char *sql = query.c_str();
     if (sqlite3_prepare_v2(mDb, sql, -1, &mStmt, NULL) != SQLITE_OK) {
         std::cerr << "Error preparing SQL statement: " << sqlite3_errmsg(mDb) << std::endl;
@@ -123,16 +115,13 @@ std::vector<Follow> Controller::getFollow(int id)
     int rc;
     while ((rc = sqlite3_step(mStmt)) == SQLITE_ROW) {
         // Get the values of the columns in the current row
-        int followerId = sqlite3_column_int(mStmt, 0);
         int followingId = sqlite3_column_int(mStmt, 1);
-        int createdAt = sqlite3_column_int(mStmt, 2);
-
-        // Print the values of the columns in the current row
-        std::cout << "Follower ID: " << followerId << ", Following ID: " << followingId << ", Created At: " << createdAt << std::endl;
+        followingIds.push_back(followingId);
     }
 
     // Finalize the SQL statement and close the database connection
     sqlite3_finalize(mStmt);
     sqlite3_close(mDb);
+    return followingIds;
 }
 
